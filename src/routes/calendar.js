@@ -12,7 +12,22 @@ router.get("/events", async (req, res) => {
       orderBy: "startTime",
     });
 
-    res.json(response.data.items);
+    const formattedEvents = response.data.items.map((event) => ({
+      id: event.id,
+      start: event.start.date || event.start.dateTime,
+      end: event.end.date
+        ? // endDateは+1日されて取得されるのでAPIとして返すときに-1してあげる
+          new Date(
+            new Date(event.end.date).setDate(
+              new Date(event.end.date).getDate() - 1
+            )
+          )
+            .toISOString()
+            .split("T")[0]
+        : event.end.dateTime,
+    }));
+
+    res.json(formattedEvents);
   } catch (error) {
     console.error("Error fetching calendar events:", error);
     res.status(500).json({ error: "Failed to fetch calendar events" });
