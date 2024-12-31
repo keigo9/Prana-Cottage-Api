@@ -8,7 +8,6 @@ router.get("/events", async (req, res) => {
       auth: auth,
       calendarId: process.env.GOOGLE_CALENDAR_ID,
       timeMin: new Date().toISOString(),
-      maxResults: 10,
       singleEvents: true,
       orderBy: "startTime",
     });
